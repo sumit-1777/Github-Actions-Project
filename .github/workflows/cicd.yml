@@ -7,36 +7,34 @@ on:
   
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn compile
+      - uses: actions/checkout@v4
 
-      steps:
-        - uses: actions/checkout@v4
-        - name: Trivy installation
-          run: |
-               sudo apt-get install wget apt-transport-https gnupg lsb-release
-                wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-                echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-                sudo apt-get update -y
-                sudo apt-get install trivy -y
-        
-          - name: Trivy Fs Scan
-            run:  Trivy Fs --format table -o fs-report.json .
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
-          - name: git leaks installation
-            run: sudo apt install gitleacks -y
-      
-    - name: gileaks cod scan
-      run:  gitleaks detect source . -r gitleaks-report.json -f json
-      
+      - name: Build with Maven
+        run: mvn compile
+
+      - name: Trivy installation
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -y
+          sudo apt-get install trivy -y
+
+      - name: Trivy FS Scan
+        run: trivy fs --format table -o fs-report.json .
+
+      - name: GitLeaks installation
+        run: sudo apt install gitleaks -y
+
+      - name: GitLeaks code scan
+        run: gitleaks detect --source . -r gitleaks-report.json -f json
