@@ -22,20 +22,20 @@ jobs:
       run: mvn compile
 
       steps:
-    - uses: actions/checkout@v4
-    - name: Trivy installation
-      run: |
-        sudo apt-get install wget apt-transport-https gnupg lsb-release
-        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-        sudo apt-get update -y
-        sudo apt-get install trivy -y
+        - uses: actions/checkout@v4
+        - name: Trivy installation
+          run: |
+               sudo apt-get install wget apt-transport-https gnupg lsb-release
+                wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+                echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+                sudo apt-get update -y
+                sudo apt-get install trivy -y
         
-    - name: Trivy Fs Scan
-      run:  Trivy Fs --format table -o fs-report.json .
+          - name: Trivy Fs Scan
+            run:  Trivy Fs --format table -o fs-report.json .
 
-    - name: git leaks installation
-      run: sudo apt install gitleacks -y
+          - name: git leaks installation
+            run: sudo apt install gitleacks -y
       
     - name: gileaks cod scan
       run:  gitleaks detect source . -r gitleaks-report.json -f json
