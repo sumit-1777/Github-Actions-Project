@@ -23,11 +23,11 @@ jobs:
         run: mvn compile
         
   security-check:
-     runs-on: self-hosted
-     needs: compile
-    
-      steps:
-      -uses: actions/checkout@v4
+    runs-on: self-hosted
+    needs: build   # fixed from 'compile' to 'build'
+
+    steps:
+      - uses: actions/checkout@v4  # fixed spacing
 
       - name: Trivy installation
         run: |
